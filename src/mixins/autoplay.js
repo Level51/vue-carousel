@@ -21,6 +21,14 @@ const autoplay = {
       type: Boolean,
       default: true,
     },
+    /**
+     * Element class to which the "pause autoplay on hover" listener should be bound.
+     * Defaults to the whole element.
+     */
+    autoplayElementClass: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -47,8 +55,17 @@ const autoplay = {
   },
   mounted() {
     if (!this.$isServer && this.autoplayHoverPause) {
-      this.$el.addEventListener("mouseenter", this.pauseAutoplay)
-      this.$el.addEventListener("mouseleave", this.startAutoplay)
+
+      // Check for a custom autoplay element class, if set bind the event listener to elements with this class
+      if (this.autoplayElementClass) {
+        for (let el of this.$el.getElementsByClassName(this.autoplayElementClass)) {
+            el.addEventListener("mouseenter", this.pauseAutoplay)
+            el.addEventListener("mouseleave", this.startAutoplay)
+        }
+      } else {
+          this.$el.addEventListener("mouseenter", this.pauseAutoplay)
+          this.$el.addEventListener("mouseleave", this.startAutoplay)
+      }
     }
 
     this.startAutoplay()
