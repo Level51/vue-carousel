@@ -57,9 +57,9 @@
     methods: {
       triggerPageAdvance(direction) {
         if (direction) {
-          this.$parent.advancePage(direction)
+          this.$parent.advancePage(direction, true)
         } else {
-          this.$parent.advancePage()
+          this.$parent.advancePage('forward', true)
         }
       },
     },

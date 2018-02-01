@@ -301,11 +301,12 @@
         }
         return this.loop ? this.pageCount - 1 : this.currentPage
       },
-      /**
-       * Increase/decrease the current page value
-       * @param  {String} direction (Optional) The direction to advance
-       */
-      advancePage(direction) {
+        /**
+         * Increase/decrease the current page value
+         * @param  {String} direction (Optional) The direction to advance
+         * @param resetAutoplay
+         */
+      advancePage(direction, resetAutoplay = false) {
         if (direction && direction === "backward" && this.canAdvanceBackward) {
           this.goToPage(this.getPreviousPage())
         } else if (
@@ -314,6 +315,9 @@
         ) {
           this.goToPage(this.getNextPage())
         }
+
+        if (resetAutoplay)
+            this.resetAutoplayInterval();
       },
       /**
        * A mutation observer is used to detect changes to the containing node
@@ -445,6 +449,15 @@
           this.currentPage = (setPage >= 0) ? setPage : 0
         }
       },
+      /**
+       * Reset the autoplay interval. Used on prev/next click.
+       */
+      resetAutoplayInterval() {
+        if (this.autoplayInterval) {
+          this.autoplayInterval = clearInterval(this.autoplayInterval)
+          this.autoplayInterval = setInterval(this.advancePage, this.autoplayTimeout)
+        }
+      }
     },
     mounted() {
       if (!this.$isServer) {
